@@ -1,0 +1,29 @@
+.announcment{
+  border: 10px solid lightgray;
+  border-radius: 10px;
+  margin: 40px 0;
+  padding: 20px;
+  width: 50vw;
+  word-wrap: break-word;
+  text-align: justify;
+}
+.announcment-fields p{
+  margin: 20px 0;
+}
+.announcment-title{
+  font-size: 1.5em;
+}
+.announcment-description{
+  font-size: 1.2em;
+}
+.form-button{
+  margin-right: 20px;
+}
+.announcment-edit{
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-input{
+  margin-bottom: 20px;
+}

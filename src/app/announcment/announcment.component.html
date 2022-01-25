@@ -1,0 +1,21 @@
+
+<div class="announcment">
+  <div class="announcment-fields">
+    <div *ngIf="!editOn;else: fields">
+      <p class="announcment-title">{{announcment.title}}</p>
+      <p class="announcment-description">{{announcment.description}}</p>
+      <p class="announcment-date">{{announcment.date | date:"MMM d, y, h:mm:ss a"}}</p>
+    </div>
+    <ng-template #fields>
+      <div class="announcment-edit">
+      <input class="edit-input"[(ngModel)]="editedTitle">
+      <textarea class="edit-input description" [(ngModel)]="editedDescription"></textarea>
+      </div>
+    </ng-template>
+  </div>
+  <div *ngIf="!searched" class="announcment-btns">
+    <button class="button form-button" (click)="editAnnouncmentMode()"> {{editBtnText}} </button>
+    <button *ngIf="!editOn" class="button form-button" (click)="deleteAnnouncment()"> Delete </button>
+    <button *ngIf="editOn" class="button form-button" (click)="saveEdit()" > Save edit </button>
+  </div>
+</div>
