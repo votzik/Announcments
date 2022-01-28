@@ -15,7 +15,21 @@
   </div>
   <div *ngIf="!searched" class="announcment-btns">
     <button class="button form-button" (click)="editAnnouncmentMode()"> {{editBtnText}} </button>
+    <button *ngIf="!editOn" class="button form-button" (click)="showSimilar()"> {{similarBtnText}} </button>
     <button *ngIf="!editOn" class="button form-button" (click)="deleteAnnouncment()"> Delete </button>
     <button *ngIf="editOn" class="button form-button" (click)="saveEdit()" > Save edit </button>
   </div>
+
+  <div class="list" *ngIf="similarPressed" >
+    <p class="search-res">Similar Announcments</p>
+    <div *ngFor="let i of similarAnnouncments">
+      <app-announcment class="similar"
+      [searched]="true"
+      [announcment]="i"
+        >
+      </app-announcment>
+    </div>
+  </div>
+
+
 </div>

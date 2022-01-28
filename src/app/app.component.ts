@@ -3,11 +3,14 @@ import { Announcment } from './models/announcment.model';
 import { AnnouncmentService } from './services/announcment.service';
 import { FormGroup, Validators, FormBuilder} from '@angular/forms';
 import { ViewportScroller } from "@angular/common";
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {SearchService} from"./services/search.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [SearchService]
 })
 export class AppComponent implements OnInit {
 
@@ -16,34 +19,41 @@ export class AppComponent implements OnInit {
   similarAnnouncment: Array<Announcment>;
   addForm: FormGroup;
 
-  @ViewChild('result') scrollElement: ElementRef;
-
 
   search: string = '';
   addPressed: boolean = false;
   searchPressed: boolean = false;
   searchStarted: boolean = false;
-  showPressed: boolean = false;
+  showPressed: boolean = true;
   announcmentDidFind: boolean = false;
 
 
-  constructor(private announcmentService: AnnouncmentService, private formBuilder: FormBuilder, private scroller: ViewportScroller){
+  constructor(private announcmentService: AnnouncmentService,
+    private formBuilder: FormBuilder,
+    private scroller: ViewportScroller,
+    private snackBar: MatSnackBar,
+    private searchService: SearchService){
     this.addForm = formBuilder.group({
       "title": ["",[Validators.required, Validators.maxLength]],
       "description": ["", [Validators.required, Validators.maxLength]]
     })
   }
   ngOnInit() {
-    this.announcmentService.announcmentSubject.subscribe((item) => this.announcmentList = item)
-    this.announcmentService.searchSubject.subscribe((item) => this.announcmentFound = item)
-    this.announcmentService.similarSubject.subscribe((item) => this.similarAnnouncment = item)
+
+    this.announcmentService.announcmentSubject.subscribe((item) => {
+      this.announcmentList = item
+      if(this.searchStarted)
+      this.announcmentDidFind = this.searchService.searchAnnouncment(this.search, this.announcmentList)
+      })
+    this.searchService.searchSubject.subscribe((item) => this.announcmentFound = item)
+    this.searchService.similarSubject.subscribe((item) => this.similarAnnouncment = item)
     this.announcmentService.initialAnnouncments()
 
   }
   ngOnDestroy(){
     this.announcmentService.announcmentSubject.unsubscribe();
-    this.announcmentService.searchSubject.unsubscribe();
-    this.announcmentService.similarSubject.unsubscribe();
+    this.searchService.searchSubject.unsubscribe();
+    this.searchService.similarSubject.unsubscribe();
   }
 
   showAnnouncments(){
@@ -62,7 +72,8 @@ export class AppComponent implements OnInit {
 
   searchAnnouncment(){
     this.searchStarted = true;
-    this.announcmentDidFind = this.announcmentService.searchAnnouncment(this.search)
+    this.announcmentDidFind = this.searchService.searchAnnouncment(this.search, this.announcmentList)
+
     this.scroller.scrollToAnchor("result");
   }
 
@@ -78,6 +89,13 @@ export class AppComponent implements OnInit {
 
 
     this.announcmentService.addAnnouncment(announcment);
+    this.showPressed = true;
+    this.scroller.scrollToAnchor("show");
+    this.snackBar.open("Announcment added", "Close",{
+      duration: 5000,
+      horizontalPosition: "right",
+      verticalPosition: "top",
+    });
 
 
   }

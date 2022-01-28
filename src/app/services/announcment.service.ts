@@ -5,8 +5,6 @@ export class AnnouncmentService{
   announcmentList: Array<Announcment> = [];
 
   announcmentSubject: Subject<Array<Announcment>> = new Subject<Array<Announcment>>() ;
-  searchSubject: Subject<Announcment> = new Subject<Announcment>() ;
-  similarSubject: Subject<Array<Announcment>> = new Subject<Array<Announcment>>() ;
 
   initialAnnouncments(){
     this.announcmentList = [new Announcment(
@@ -48,49 +46,6 @@ export class AnnouncmentService{
 
     )
     this.announcmentSubject.next(this.announcmentList)
-  }
-
-  stringWordMatch(str1: string, str2: string) {
-    str1 = str1.toLowerCase();
-    str2 = str2.toLowerCase();
-    let wordArray = [];
-    let uniqueWordArray = [];
-
-    for (let i of str1.split(" ")) {
-      i = i.replace(/[^a-zа-я0-9\s+]/gi, "");
-      if (i) wordArray.push(i);
-    }
-
-    uniqueWordArray = wordArray.filter(
-      (item, index, array) => array.indexOf(item) === index
-    );
-
-    for (let i of uniqueWordArray) {
-      if (str2.includes(i)) {
-        return true;
-      }
-    }
-  }
-  similarSearch(announcment: Announcment, announcmentArray: Array<Announcment>){
-    let similarArray = announcmentArray.filter(item => this.stringWordMatch(announcment.title, item.title) &&
-    this.stringWordMatch(announcment.description, item.description))
-    return similarArray;
-  }
-
-  searchAnnouncment(title: string){
-    let searchResult = this.announcmentList.find((item) =>  this.stringWordMatch(title, item.title) )
-    if(searchResult){
-      this.searchSubject.next(searchResult)
-
-      let similarArray = this.similarSearch(searchResult,
-        this.announcmentList.filter((item) => item.index != searchResult.index)).slice(0,3)
-      this.similarSubject.next(similarArray)
-      return true;
-    }
-    else{
-      this.similarSubject.next([])
-      return false;
-    }
   }
 
 }

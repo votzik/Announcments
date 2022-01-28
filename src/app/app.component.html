@@ -21,10 +21,11 @@
         type="text"
         formControlName="description"
       ></textarea>
-      <p class="tip">
-        *Max length for title is 40 characters and for description 200
-      </p>
+
     </div>
+    <p class="tip">
+      *Max length for title is 40 characters and for description 200
+    </p>
     <div>
       <button class="button form-button" [disabled]="addForm.invalid">
         Add
@@ -42,12 +43,16 @@
   </button>
 </div>
 <div class="show-container">
-  <p class="show-announcments" (click)="showAnnouncments()"> Show announcments {{showPressed?"▲":"▼"}} </p>
+  <p class="show-announcments" id='show' (click)="showAnnouncments()"> Show announcments {{showPressed?"▲":"▼"}} </p>
 </div>
 
   <div *ngIf="showPressed" class="list">
     <div *ngFor="let i of announcmentList">
-      <app-announcment [announcment]="i"> </app-announcment>
+      <app-announcment
+       [announcmentArray]="announcmentList"
+       [announcment]="i"
+        >
+      </app-announcment>
     </div>
   </div>
 
